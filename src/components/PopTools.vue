@@ -12,12 +12,23 @@
         </div>
         <div class="toolInstances">
             <TransitionGroup name="spawn" @before-leave="beforeLeave">
-                <div class="instance" v-for="timer in activeTimers" :key="timer.key" :class="{timerIsDone: timer.isDone}">
+                <div class="instance" v-for="timer in activeTimers" :key="timer.key" :class="{timerIsDone: timer.isDone, timerIsPaused: timer.isPaused&&!timer.isDone}">
                     <p class="timerText">{{ timeLeft(timer.key, forceRefreshKey) }}</p>
                     <div class="instanceActions">
-                        <button>Pause</button>
+                        <button v-if="timer.isBeeping" @click="timer.isBeeping = false">Stop Beep</button>
+                        <template v-if="!timer.isDone">
+                            <button @click="pauseTimer(timer.key)" v-if="!timer.isPaused">Pause</button>
+                            <button @click="unpauseTimer(timer.key)" v-if="timer.isPaused">Resume</button>
+                        </template>
                         <!-- <button>Resume</button> -->
                         <button @click="removeTimer(timer.key)">Remove</button>
+                    </div>
+                    <div class="beepCover" @click="timer.isBeeping=false" v-if="timer.isBeeping">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-alarm" viewBox="0 0 16 16">
+                            <path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9z"/>
+                            <path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1zm1.038 3.018a6 6 0 0 1 .924 0 6 6 0 1 1-.924 0M0 3.5c0 .753.333 1.429.86 1.887A8.04 8.04 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5M13.5 1c-.753 0-1.429.333-1.887.86a8.04 8.04 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1"/>
+                        </svg>
+                        <span class="beepInstruction">Click to dismiss</span>
                     </div>
                 </div>
             </TransitionGroup>
@@ -26,14 +37,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 type TimerInstance = {
     key: string,
     untilTimestamp: number,
     isDone: boolean,
     isPaused: boolean,
-    pausedAt?: number,
+    pausedMSRemaining?: number,
+    isBeeping?: boolean,
 }
 
 const newTimerString = ref<string>('')
@@ -85,25 +97,38 @@ function formatTime() {
     }
 }
 
+function syncTimersToLocalStorage() {
+    localStorage.setItem('activeTimers', JSON.stringify(activeTimers.value))
+}
+
 function spawnTimer() {
     const time = formatTime()
     if (!time.valid) return
     const addTime = 500 // Add half a second for nicer looking starting value
     newTimerString.value = ''
-    activeTimers.value.unshift({
+    const timer = {
         key: Math.random().toString(36).substring(7),
         untilTimestamp: Date.now() + time.totalSeconds * 1000 + addTime,
         isDone: false,
         isPaused: false,
-    })
+    }
+    activeTimers.value.unshift(timer)
+    syncTimersToLocalStorage()
 }
 
 function timeLeft(key: string, _forceRefreshKey: any) {
     const timer = activeTimers.value.find(t => t.key == key)
     if (!timer) return 'missing timer'
-    const timeLeft = timer.untilTimestamp - Date.now()
+    if (timer.isDone) return '00:00:00'
+    let timeLeft;
+    if (timer.isPaused) {
+        timeLeft = timer.pausedMSRemaining!
+    } else {
+        timeLeft = timer.untilTimestamp - Date.now()
+    }
     if (timeLeft < 0) {
         timer.isDone = true
+        timer.isBeeping = true
         return '00:00:00'
     }
     const hours = Math.floor(timeLeft / 3600000).toString().padStart(2, "0")
@@ -112,8 +137,25 @@ function timeLeft(key: string, _forceRefreshKey: any) {
     return `${hours}:${minutes}:${seconds}`
 }
 
+function pauseTimer(key: string) {
+    const timer = activeTimers.value.find(t => t.key == key)
+    if (!timer) return
+    timer.isPaused = true
+    timer.pausedMSRemaining = timer.untilTimestamp - Date.now()
+    syncTimersToLocalStorage()
+}
+
+function unpauseTimer(key: string) {
+    const timer = activeTimers.value.find(t => t.key == key)
+    if (!timer) return
+    timer.isPaused = false
+    timer.untilTimestamp = Date.now() + timer.pausedMSRemaining!
+    syncTimersToLocalStorage()
+}
+
 function removeTimer(key: string) {
     activeTimers.value = activeTimers.value.filter(t => t.key != key)
+    syncTimersToLocalStorage()
 }
 
 let timeRenderInterval: NodeJS.Timeout
@@ -122,27 +164,48 @@ onMounted(()=>{
     timeRenderInterval = setInterval(()=>{
         forceRefreshKey.value++
     }, 1000)
-
-    setTimeout(()=>{
-        activeTimers.value.unshift({
-            key: Math.random().toString(36).substring(7),
-            untilTimestamp: Date.now() + 30 * 1000,
-            isDone: false,
-            isPaused: false,
-        })
-    }, 3000)
-    setTimeout(()=>{
-        activeTimers.value.unshift({
-            key: Math.random().toString(36).substring(7),
-            untilTimestamp: Date.now() + 0.5 * 1000,
-            isDone: false,
-            isPaused: false,
-        })
-    }, 1300)
+    const storedTimers = localStorage.getItem('activeTimers')
+    if (storedTimers) {
+        activeTimers.value = JSON.parse(storedTimers)
+    }
 })
 onUnmounted(()=>{
     clearInterval(timeRenderInterval)
 })
+// Sound stuff
+import * as Tone from "tone";
+let synth: Tone.Synth|undefined;
+const beepTimeBetweenNotes = 0.30
+const beepTimeBetweenSets = 1.00
+const isBeeping = computed(()=>{
+    for (const timer of activeTimers.value) {
+        if (timer.isBeeping) return true
+    }
+    return false
+})
+async function beeps() {
+    if (!synth) return
+    Tone.start()
+    const now = Tone.now()
+    synth.triggerAttackRelease("E4", "16n", now + 0*beepTimeBetweenNotes)
+    synth.triggerAttackRelease("E4", "16n", now + 1*beepTimeBetweenNotes)
+    synth.triggerAttackRelease("E4", "16n", now + 2*beepTimeBetweenNotes)
+    synth.triggerAttackRelease("E4", "16n", now + 3*beepTimeBetweenNotes)
+}
+let beepInterval: NodeJS.Timeout
+onMounted(()=>{
+    synth = new Tone.Synth().toDestination()
+    beepInterval = setInterval(()=>{
+        if (isBeeping.value) {
+            beeps()
+        }
+    }, beepTimeBetweenSets * 1000 + beepTimeBetweenNotes * 4 * 1000)
+})
+onUnmounted(()=>{
+    synth?.dispose()
+    clearInterval(beepInterval)
+})
+
 // Vue Transition
 function beforeLeave(el: any) {
     const {marginLeft, marginTop, width, height} = window.getComputedStyle(el)
@@ -161,6 +224,7 @@ function beforeLeave(el: any) {
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
 }
 .instance {
+    position: relative;
     border: 1px solid rgba(var(--accent-light), 35%);
     /* background: linear-gradient(90deg, rgb(var(--accent-dark)) 10%, rgba(var(--accent-light), 30%) 80%, rgba(var(--accent-light), 40%), rgb(var(--danger-dark))); */
     background: linear-gradient(35deg,
@@ -267,6 +331,41 @@ function beforeLeave(el: any) {
 }
 .instance.timerIsDone {
     background-position: 100%;
+}
+.instance.timerIsPaused {
+    background-position: 50%;
+}
+.instance.timerIsPaused .timerText {
+    background-position: 50%;
+}
+.beepCover {
+    position: absolute;
+    inset: 0;
+    background: #0009;
+    backdrop-filter: blur(2px);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+}
+.beepCover svg {
+    width: 50px;
+    height: 50px;
+}
+.beepInstruction {
+    position: absolute;
+    display: flex;
+    background: #000;
+    padding: 3px 9px;
+    z-index: 100;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 200ms;
+}
+.beepCover:hover .beepInstruction {
+    opacity: 1;
 }
 /* Vue Transition */
 .spawn-move,
