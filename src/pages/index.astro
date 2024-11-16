@@ -1,14 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
-
+import PopTools from '../components/PopTools.vue';
 import { db, Message } from 'astro:db'
 
 if (Astro.request.method === "POST") {
 	const formData = await Astro.request.formData()
 	const message = formData.get("message")
 	const author = "dev"
-	if (typeof message == "string" && typeof author == "string") {
+	if (typeof message == "string" && typeof author == "string" && message.length > 3) {
 		await db.insert(Message).values({ author, message })
 	}
 }
@@ -53,32 +52,12 @@ const messages = await db.select().from(Message).all()
 				<li>{m.message} <span class="author">{m.author}</span></li>
 			)}
 		</ul>
-		<form method="POST" style="display: grid">
-			<input name="message" id="message" placeholder="New message">
-			<input type="submit">Submit</input>
+		<form method="POST" style="display: grid" class="newMessage">
+			<input name="message" id="message" placeholder="New message" style="border-radius: 10px 10px 0 0px">
+			<input type="submit" style="border-radius: 0px 0px 10px 10px">
 		</form>
-		<!-- <ul role="list" class="link-card-grid">
-			<Card
-				href="https://docs.astro.build/"
-				title="Documentation"
-				body="Learn how Astro works and explore the official API docs."
-			/>
-			<Card
-				href="https://astro.build/integrations/"
-				title="Integrations"
-				body="Supercharge your project with new frameworks and libraries."
-			/>
-			<Card
-				href="https://astro.build/themes/"
-				title="Themes"
-				body="Explore a galaxy of community-built starter themes."
-			/>
-			<Card
-				href="https://astro.build/chat/"
-				title="Community"
-				body="Come say hi to our amazing Discord community. ❤️"
-			/>
-		</ul> -->
+		<PopTools client:load />
+		<div style="height: 33svh;"></div>
 	</main>
 </Layout>
 
@@ -143,5 +122,24 @@ const messages = await db.select().from(Message).all()
 		color: rgba(var(--accent-light), 0.6);
 		font-size: 0.8em;
 		font-style: italic;
+	}
+	.newMessage {
+		border: 1px solid rgba(var(--accent-light), 25%);
+		padding: 0.75rem;
+		border-radius: 8px;
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+	}
+	.newMessage input {
+		border: none;
+		background: rgba(var(--accent-light), 6%);
+		color: white;
+		padding: 0.5rem;
+		transition: background-color 100ms;
+	}
+	.newMessage input:focus,
+	.newMessage input:active,
+	.newMessage input:hover {
+		outline: none;
+		background: rgba(var(--accent-light), 9%);
 	}
 </style>
