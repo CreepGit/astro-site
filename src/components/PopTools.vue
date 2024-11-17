@@ -5,7 +5,7 @@
             <form class="inputGroup" @submit.prevent="spawnTimer()" :class="{invalid: !newTimerIsValid}">
                 <label class="toolName" for="newTimer">Spawn a new timer</label>
                 <div class="inputPair">
-                    <input type="text" id="newTimer" v-model="newTimerString" placeholder="New Timer" />
+                    <input type="text" id="newTimer" v-model="newTimerString" :placeholder="exampleTimerPreview" />
                     <input type="submit" value="Go">
                 </div>
             </form>
@@ -20,7 +20,6 @@
                             <button @click="pauseTimer(timer.key)" v-if="!timer.isPaused">Pause</button>
                             <button @click="unpauseTimer(timer.key)" v-if="timer.isPaused">Resume</button>
                         </template>
-                        <!-- <button>Resume</button> -->
                         <button @click="removeTimer(timer.key)">Remove</button>
                     </div>
                     <div class="beepCover" @click="timer.isBeeping=false" v-if="timer.isBeeping">
@@ -171,6 +170,64 @@ onMounted(()=>{
 })
 onUnmounted(()=>{
     clearInterval(timeRenderInterval)
+})
+
+// Example timers
+import Typewriter from 'typewriter-effect/dist/core';
+
+const exampleTimerPreview = ref<string>('')
+function intBetween(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+const exampleTimers = [
+    () => `${intBetween(1, 10)}m`,
+    () => `${intBetween(1, 30)}m ${intBetween(1,5) * 10}s`,
+    () => `${intBetween(1, 48)}h ${intBetween(1,11) * 5}m`,
+    () => `${intBetween(1, 3)}h ${intBetween(1, 30)}m ${intBetween(1,5) * 10}s`,
+    () => `${intBetween(1, 10)} minutes`,
+    () => `${intBetween(1, 30)} min ${intBetween(1,5) * 10} sec`,
+    () => `${intBetween(110, 999)}min`,
+    () => `${intBetween(1, 24)}h`,
+    () => `${intBetween(10, 120)} minutes`,
+    () => `${intBetween(1, 15)}h ${intBetween(1, 45)}m`,
+    () => `${intBetween(1, 60)}m ${intBetween(1, 59)}s`,
+    () => `${intBetween(2, 10)}h ${intBetween(1,30)} min`,
+    () => `${intBetween(30, 600)} seconds`,
+    () => `${intBetween(50, 500)}min`,
+    () => `${intBetween(1, 6)}h ${intBetween(10, 50)}m ${intBetween(5, 55)}s`,
+    () => `${intBetween(100, 999)} mins`,
+    () => `${intBetween(1, 12)}h ${intBetween(1, 59)}m ${intBetween(1, 59)}s`,
+    () => `${intBetween(15, 90)} mins`,
+    () => `${intBetween(1, 48)} hours`,
+    () => `${intBetween(1, 24)}h ${intBetween(1, 60)}m`,
+    () => `${intBetween(1, 10)} hours`,
+    () => `${intBetween(1000, 80000)} seconds`,
+    () => `${intBetween(1, 4)}h ${intBetween(15, 45)}min`,
+    () => `${intBetween(1, 20)}m ${intBetween(10, 40)}s`,
+    () => `${intBetween(1, 59)}m ${intBetween(1,59)} seconds`,
+    () => `${intBetween(1, 72)} hours`,
+    () => `${intBetween(1, 1000)} mins`,
+    () => `${intBetween(10, 999)} seconds`,
+    () => `${intBetween(1, 5)}h ${intBetween(1,30)}m ${intBetween(1,20) * 3}s`,
+]
+function selectRandomExampleTimer() {
+    const randomTimer = exampleTimers[intBetween(0, exampleTimers.length - 1)]()
+    return randomTimer
+}
+onMounted(()=>{
+    const randomTimerStrings = Array.from({length: 15}, selectRandomExampleTimer)
+    new Typewriter(null, {
+        strings: randomTimerStrings,
+        autoStart: true,
+        loop: true,
+        pauseFor: 3000,
+        onCreateTextNode: (character: string) => {
+            exampleTimerPreview.value += character
+        },
+        onRemoveNode: (character: string) => {
+            exampleTimerPreview.value = exampleTimerPreview.value.slice(0, -1)
+        }
+    })
 })
 // Sound stuff
 import * as Tone from "tone";

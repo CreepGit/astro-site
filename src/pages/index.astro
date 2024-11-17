@@ -1,18 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PopTools from '../components/PopTools.vue';
-import { db, Message } from 'astro:db'
-
-if (Astro.request.method === "POST") {
-	const formData = await Astro.request.formData()
-	const message = formData.get("message")
-	const author = "dev"
-	if (typeof message == "string" && typeof author == "string" && message.length > 3) {
-		await db.insert(Message).values({ author, message })
-	}
-}
-
-const messages = await db.select().from(Message).all()
 ---
 
 <Layout title="Welcome to Astro.">
@@ -45,17 +33,8 @@ const messages = await db.select().from(Message).all()
 				</linearGradient>
 			</defs>
 		</svg>
-		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
-		<p class="instructions">Heya! Got something to show here</p>
-		<ul>
-			{messages.map(m=>
-				<li>{m.message} <span class="author">{m.author}</span></li>
-			)}
-		</ul>
-		<form method="POST" style="display: grid" class="newMessage">
-			<input name="message" id="message" placeholder="New message" style="border-radius: 10px 10px 0 0px">
-			<input type="submit" style="border-radius: 0px 0px 10px 10px">
-		</form>
+		<h1>Welcome to <span class="text-gradient">a Page</span></h1>
+		<!-- <p class="instructions">Heya! Got something to show here</p> -->
 		<PopTools client:load />
 		<div style="height: 33svh;"></div>
 	</main>
