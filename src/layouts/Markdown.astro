@@ -76,7 +76,7 @@ const { frontmatter } = Astro.props;
     }
     :root {
         --golden-gradient: linear-gradient(55deg, yellow 0%, yellow 30%, lightyellow 60%, gold 62%, yellow 100%);
-        --puprle-gradient: linear-gradient(55deg, rgb(136, 58, 234) 20%, rgb(224, 204, 250) 50%, white 70%);
+        --puprle-gradient: linear-gradient(55deg, rgb(136, 58, 234) 20%, rgb(203, 173, 244) 70%, lightgrey 73.5%, rgb(203, 173, 244) 80%);
     }
     content code {
         box-sizing: border-box;
@@ -84,15 +84,10 @@ const { frontmatter } = Astro.props;
         /* color: var(--code-col); */
         padding: 0.1rem 0.2rem;
         background: linear-gradient(55deg, yellow 0%, yellow 30%, lightyellow 60%, gold 62%, yellow 100%);
-        background-position: 0%;
-        background-size: 150%;
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
         transition: background-position 500ms;
-    }
-    content code:hover {
-        background-position: 100%;
     }
     content pre code {
         background: none;
@@ -142,8 +137,17 @@ const { frontmatter } = Astro.props;
 
     /* region Tables */
     content table {
+        border-collapse: collapse;
+    }
+    content table th {
+        white-space: nowrap;
+        padding: 1px 0.5rem;
+    }
+    content .table-wrapper {
         overflow-x: scroll;
-        max-width: 100%;
+    }
+    content table tr td {
+        transition: background-color 70ms;
     }
     content table tr:hover td {
         background: rgba(255, 255, 255, 0.1);

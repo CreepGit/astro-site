@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 
 import vue from '@astrojs/vue';
 
+import rehypeWrapAll from 'rehype-wrap-all';
+
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
@@ -11,8 +13,7 @@ export default defineConfig({
   ],
   markdown: {
     rehypePlugins: [
-      // wrap,
-      // wrap({ selector: "table", wrapper: "div.table-container" }),
+      [rehypeWrapAll, {selector: "table", wrapper: "div.table-wrapper"}],
     ]
   }
 });

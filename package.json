@@ -13,7 +13,6 @@
     "@astrojs/check": "^0.9.4",
     "@astrojs/vue": "^4.5.2",
     "astro": "^4.16.13",
-    "rehype-wrap": "^1.1.0",
     "rehype-wrap-all": "^1.1.0",
     "tone": "^15.0.4",
     "typescript": "^5.6.3",

@@ -4,7 +4,7 @@ title: "Example Page"
 author: "admin"
 date: "2024.11.18."
 ---
-Here is a _great_ example of a content page
+Here is a _great_ example of a content page. If you do not like this you can go back to the [home page](/).
 
 ## Subsection
 
@@ -76,3 +76,11 @@ Some tables might have problems on not-so-wide devices such as mobile phones. He
 | Doughnuts      | Flour        | Sugar        | Milk         | Eggs         | Butter       | Yeast        |
 
 As you can see, sugar is a very common ingredient in many of these foods. It is often used to enhance flavor and provide sweetness. However, consuming too much sugar can have negative health effects, such as increasing the risk of obesity, diabetes, and heart disease. It is important to be mindful of your sugar intake and try to balance it with other nutrients in your diet.
+
+Everything works for a itsy-bitsy tiny table too!
+
+| a | b | c |
+|---|---|---|
+| 1 | 2 | 3 |
+| 4 | 5 | 6 |
+| 7 | 8 | 9 |
