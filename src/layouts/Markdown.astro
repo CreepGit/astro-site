@@ -1,0 +1,152 @@
+---
+import Layout from "./Layout.astro";
+const { frontmatter } = Astro.props;
+---
+
+<Layout title={frontmatter.title}>
+    <main>
+        <header>
+            <h1>{ frontmatter.title }</h1>
+            <p class="author">Made by {frontmatter.author}, {frontmatter.date}</p>
+            <a href="/" class="back"><span>&lt;</span></a>
+        </header>
+        <content>
+            <slot>
+                <h1>NO CONTENT LOADED</h1>
+            </slot>
+            <div style="height: 33svh;"></div>
+        </content>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1rem;
+        width: 800px;
+        max-width: calc(100% - 2rem);
+        color: white;
+        font-size: 20px;
+        line-height: 1.6;
+    }
+    .author {
+        opacity: 60%;
+    }
+    header>* {
+        margin: 0;
+    }
+    header {
+        position: relative;
+        margin-top: 2rem;
+    }
+    header h1 {
+        background: var(--golden-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        width: fit-content;
+        color: transparent;
+    }
+    header .back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 2rem;
+        text-decoration: none;
+        color: white;
+        translate: -100%;
+        width: 6rem;
+        text-align: center;
+    }
+    header .back span {
+        box-sizing: border-box;
+        display: inline-block;
+        height: 100%;
+        width: 50%;
+        border-radius: 1rem;
+        border: 1px solid transparent;
+    }
+    header .back:hover span {
+        border-color: white;
+    }
+</style>
+
+<style is:global>
+    html {
+        scroll-behavior: smooth;
+    }
+    :root {
+        --golden-gradient: linear-gradient(55deg, yellow 0%, yellow 30%, lightyellow 60%, gold 62%, yellow 100%);
+        --puprle-gradient: linear-gradient(55deg, rgb(136, 58, 234) 20%, rgb(224, 204, 250) 50%, white 70%);
+    }
+    content code {
+        box-sizing: border-box;
+        border: 1px solid rgb(206, 157, 24);
+        /* color: var(--code-col); */
+        padding: 0.1rem 0.2rem;
+        background: linear-gradient(55deg, yellow 0%, yellow 30%, lightyellow 60%, gold 62%, yellow 100%);
+        background-position: 0%;
+        background-size: 150%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        transition: background-position 500ms;
+    }
+    content code:hover {
+        background-position: 100%;
+    }
+    content pre code {
+        background: none;
+        padding: 0;
+        border: none;
+    }
+    content pre {
+        position: relative;
+        font-size: 1rem;
+        border: 1px solid rgb(206, 157, 24);
+    }
+    content h1,
+    content h2,
+    content h3,
+    content table th {
+        background: var(--puprle-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        width: fit-content;
+    }
+
+    content a {
+        text-decoration: dotted underline;
+        color: white;
+        transition: color 200ms;
+    }
+    content a:hover {
+        color: gold;
+    }
+
+    /* region Scroll */
+    content ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    content ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    content ::-webkit-scrollbar-thumb {
+        background: linear-gradient(55deg, yellow 10%, orange 90%);
+        border-radius: 10px;
+    }
+    content ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    /* endregion Scroll */
+
+    /* region Tables */
+    content table {
+        overflow-x: scroll;
+        max-width: 100%;
+    }
+    content table tr:hover td {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    /* endregion Tables */
+</style>

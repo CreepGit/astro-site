@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PopTools from '../components/PopTools.vue';
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Tools!">
 	<main>
 		<svg
 			class="astro-a"
@@ -35,6 +35,10 @@ import PopTools from '../components/PopTools.vue';
 		</svg>
 		<h1>Welcome to <span class="text-gradient">a Page</span></h1>
 		<!-- <p class="instructions">Heya! Got something to show here</p> -->
+		<h2>Pages</h2>
+		<ul>
+			<li><a href="/page/example">Example</a></li>
+		</ul>
 		<PopTools client:load />
 		<div style="height: 33svh;"></div>
 	</main>
