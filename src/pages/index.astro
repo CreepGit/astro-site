@@ -1,6 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PopTools from '../components/PopTools.vue';
+import { getCollection, getEntry } from 'astro:content';
+import { render } from 'astro:content';
+
+const allPages = await getCollection('page');
+
+function capitalize(s: string) {
+	return s.charAt(0).toUpperCase() + s.slice(1);
+}
 ---
 
 <Layout title="Tools!">
@@ -36,8 +44,11 @@ import PopTools from '../components/PopTools.vue';
 		<h1>Welcome to <span class="text-gradient">a Page</span></h1>
 		<!-- <p class="instructions">Heya! Got something to show here</p> -->
 		<h2>Content Pages</h2>
+		<span style="opacity: 60%;"><i>Now dynamic!</i></span>
 		<ul style="color: gold;">
-			<li><a style="color: inherit;" href="/page/example">Example</a></li>
+			 {allPages.map((p)=>
+			 	<li><a style="color: inherit;" href={'/page/' + p.slug}>{capitalize(p.slug)}</a></li>
+			)}
 		</ul>
 		<PopTools client:load />
 		<div style="height: 33svh;"></div>

@@ -6,6 +6,10 @@ date: "2024.11.18."
 ---
 Here is a _great_ example of a content page. If you do not like this you can go back to the [home page](/).
 
+This is the **content page** version!
+
+Try visit [another page](/page/other)!
+
 ## Subsection
 
 Content for said subsection
