@@ -30,3 +30,9 @@ Did you know that the first computer virus was created in 1983? It was called th
 ### Stay Curious
 
 Even though this page is a bit more laid-back, there's always something new to learn and explore. So, keep clicking around and who knows what you might discover!
+
+# Life lessons
+
+A smart man once told me
+
+> "Bleh"

@@ -6,9 +6,13 @@ const { frontmatter } = Astro.props;
 <Layout title={frontmatter.title}>
     <main>
         <header>
+            <a href="/" style="color: white;">
+                <svg class="back" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                </svg>
+            </a>
             <h1>{ frontmatter.title }</h1>
             <p class="author">Made by {frontmatter.author}, {frontmatter.date}</p>
-            <a href="/" class="back"><span>&lt;</span></a>
         </header>
         <content>
             <slot>
@@ -37,7 +41,6 @@ const { frontmatter } = Astro.props;
     }
     header {
         position: relative;
-        margin-top: 2rem;
     }
     header h1 {
         background: var(--golden-gradient);
@@ -47,26 +50,11 @@ const { frontmatter } = Astro.props;
         color: transparent;
     }
     header .back {
-        position: absolute;
-        top: 0;
-        left: 0;
-        font-size: 2rem;
-        text-decoration: none;
-        color: white;
-        translate: -100%;
-        width: 6rem;
-        text-align: center;
-    }
-    header .back span {
-        box-sizing: border-box;
-        display: inline-block;
-        height: 100%;
-        width: 50%;
-        border-radius: 1rem;
         border: 1px solid transparent;
     }
-    header .back:hover span {
+    header .back:hover {
         border-color: white;
+        border-radius: 1rem;
     }
 </style>
 
@@ -102,6 +90,8 @@ const { frontmatter } = Astro.props;
     content h1,
     content h2,
     content h3,
+    content h4,
+    content h5,
     content table th {
         background: var(--puprle-gradient);
         -webkit-background-clip: text;
@@ -116,6 +106,13 @@ const { frontmatter } = Astro.props;
     }
     content a:hover {
         color: gold;
+    }
+
+    content blockquote {
+        border-left: 4px solid gold;
+        padding-left: 1rem;
+        margin: 0;
+        background: rgba(255, 255, 255, 0.1);
     }
 
     /* region Scroll */
@@ -153,4 +150,11 @@ const { frontmatter } = Astro.props;
         background: rgba(255, 255, 255, 0.1);
     }
     /* endregion Tables */
+
+    /* region Images */
+    content img {
+        max-width: 100%;
+        height: auto;
+    }
+    /* endregion Images */
 </style>

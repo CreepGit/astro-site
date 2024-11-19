@@ -57,16 +57,16 @@ By using Markdown, you can easily create rich content for your site without need
 
 Below is a table showcasing various programming languages and their respective points. This can help you compare the popularity or proficiency levels of different languages at a glance.
 
-| Programming Language | Points |
-|----------------------|--------|
-| JavaScript           | 90     |
-| Python               | 85     |
-| Java                 | 80     |
-| C#                   | 75     |
-| C++                  | 70     |
-| Ruby                 | 65     |
-| Go                   | 60     |
-| Swift                | 55     |
+| Language   | Points | Popularity |
+|------------|--------|------------|
+| JavaScript | 90     | High       |
+| Python     | 85     | High       |
+| Java       | 80     | Bad        |
+| C#         | 75     | Medium     |
+| C++        | 70     | Medium     |
+| Ruby       | 65     | Low        |
+| Go         | 60     | Low        |
+| Swift      | 55     | Medium     |
 
 Some tables might have problems on not-so-wide devices such as mobile phones. Here's an example of one. As am example below is a table showcasing various foods and their six most common ingredients. This can help you understand the composition of these foods at a glance.
 
@@ -88,3 +88,23 @@ Everything works for a itsy-bitsy tiny table too!
 | 1 | 2 | 3 |
 | 4 | 5 | 6 |
 | 7 | 8 | 9 |
+
+## Images
+
+Here's how images look like. First a big one...
+
+![Example Image](https://picsum.photos/id/139/1200/300)
+
+...and then a smaller one.
+
+![Example Image](https://picsum.photos/id/167/400/300)
+
+Although the perceived size of the images might be the opposite on a smaller device. Staying within the golden and purple theme so the randomly generated images fit the page better.
+
+---
+
+## The bottom
+
+It looks like you found the bottom 🥺
+
+[Let's go back to the top](#)!
